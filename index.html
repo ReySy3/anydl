@@ -86,8 +86,8 @@
 <body>
 
     <!-- MP3 autoplay from GitHub -->
-    <audio autoplay loop>
-        <source src="spotifydown.com - Gitara.mp3" type="audio/mpeg">
+    <audio id="background-audio" loop>
+        <source src="https://raw.githubusercontent.com/ReySy3/anydl/main/spotifydown.com%20-%20Gitara.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
@@ -96,7 +96,7 @@
         <p>Universal Downloader</p>
         <input type="url" id="mediaUrl" placeholder="Enter the URL of the media" required>
         <br>
-        <button onclick="downloadMedia()">Download</button>
+        <button onclick="startAudioAndDownload()">Download</button>
     </div>
 
     <div id="videoPreview" style="display: none;">
@@ -130,6 +130,16 @@
 
     <script>
         let downloadUrl = '';
+        const audioElement = document.getElementById('background-audio');
+
+        // Start audio playback and download media when the button is clicked
+        function startAudioAndDownload() {
+            audioElement.play().catch(error => {
+                console.error('Playback failed:', error);
+                alert('Playback failed. Please ensure sound is enabled and try again.');
+            });
+            downloadMedia();
+        }
 
         function downloadMedia() {
             var url = document.getElementById('mediaUrl').value;
