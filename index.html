@@ -1,131 +1,159 @@
-<!doctype html>
-<html lang="en"> 
-<head> 
-  <meta charset="UTF-8"> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <title>Haru - Universal Downloader</title> 
-  <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; 
-            flex-direction: column;
-            background: linear-gradient(to bottom, cyan, violet);
-            padding: 20px;
-            min-height: 100vh;
-            overflow: auto; 
-            position: relative;
-            padding-bottom: 60px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnyDL - Universal Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a4e69;
+            --secondary-color: #9a8c98;
+            --accent-color: #c9ada7;
+            --background-color: #22223b;
+            --text-color: #f2e9e4;
         }
 
-        .snow {
-            position: fixed; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; 
-            overflow: hidden; 
-            z-index: 0; 
+            z-index: -1;
         }
 
-        .snowflake {
-            position: absolute;
-            top: -10%;
-            background: linear-gradient(white, rgba(255, 165, 0, 0.8), rgba(255, 0, 0, 0.8)); /* Red, orange, and white gradient */
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0.8;
-        }
-
-        .container, #previewContainer, #supportedSites, .footer-container {
-            text-align: center;
-            background-color: white;
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 20px violet;
-            width: 80%;
+            width: 90%;
             max-width: 600px;
             margin-bottom: 20px;
-            position: relative;
-            z-index: 1; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        input[type="url"], button {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            font-family: 'Courier New', Courier, monospace;
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+            text-align: center;
+        }
+
+        p {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         input[type="url"] {
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 25px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            font-size: 1rem;
         }
 
         button {
-            background-color: #4CAF50;
-            color: white;
+            width: 100%;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            font-size: 1rem;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: var(--secondary-color);
         }
 
-        h1, h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        #previewContainer {
+            display: none;
+            margin-top: 20px;
         }
 
-        p, ul {
-            font-size: 18px;
-            color: gray;
+        #previewImage, #previewVideo {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
-        ul {
+        #supportedSites {
+            margin-top: 30px;
+        }
+
+        #supportedSites h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        #supportedSites ul {
             list-style-type: none;
             padding: 0;
         }
 
-        ul li::before {
-            content: "• ";
-            color: black;
+        #supportedSites li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
         }
 
-        img, video {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        .footer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: row;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: white;
-            border-radius: 5px;
-            border: 2px solid cyan;
-            box-shadow: 0 0 5px cyan, 0 0 10px cyan;
-        }
-
-        
-        .profile-circle {
+        #supportedSites li::before {
+            content: "•";
             position: absolute;
-            top: 30px;  
-            right: 30px;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .profile-circle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             width: 60px;
-            height: 60px; 
+            height: 60px;
             border-radius: 50%;
             overflow: hidden;
-            box-shadow: 0 0 15px cyan, 0 0 25px cyan, 0 0 35px cyan;
-            z-index: 2; 
+            box-shadow: 0 0 15px var(--accent-color);
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-circle:hover {
+            transform: scale(1.1);
         }
 
         .profile-img {
@@ -134,106 +162,206 @@
             object-fit: cover;
         }
 
-        .rainbow-text {
-            background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            font-size: 16px; 
-            font-weight: bold; 
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
         }
-    </style> 
-</head> 
-<body> 
-  <audio id="background-audio" loop> 
-   <source src="https://raw.githubusercontent.com/ReySy3/anydl/main/spotifydown.com%20-%20Gitara.mp3" type="audio/mpeg"> Your browser does not support the audio element. 
-  </audio> 
 
-  
-  <div class="snow" id="snowContainer"></div>
+        .footer-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 25px;
+            padding: 10px 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-  
-  <div class="profile-circle">
-      <a href="https://www.facebook.com/yuii022605" target="_blank">
-          <img src="https://i.ibb.co/X5862Ym/20th-Century-Boys-Manga.jpg" alt="Profile" class="profile-img">
-      </a>
-  </div>
+        #currentTime {
+            margin-right: 10px;
+        }
 
-  <div class="container">
-      <h1>AnyDL</h1>
-      <p>Universal Downloader</p>
-      <input type="url" id="mediaUrl" placeholder="Enter the URL of the media" required>
-      <br>
-      <button onclick="startAudioAndDownload()">Download</button>
-  </div>
+        .rainbow-text {
+            background: linear-gradient(to right, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
 
-  
-  <div id="previewContainer" style="display: none;">
-    <h2>Media Preview:</h2>
-    <img id="previewImage" style="display: none;" alt="Image Preview">
-    <video id="previewVideo" controls style="display: none;"></video>
-    <br> 
-    <button id="downloadButton" onclick="triggerDownload()">Download Media</button>
-  </div> 
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
 
-  <div id="supportedSites"> 
-   <h2>Supported Platforms:</h2> 
-   <ul> 
-    <li>Instagram photos, videos, stories and reels</li> 
-    <li>TikTok videos and carousels with no watermark</li> 
-    <li>Facebook photos, videos, stories and reels</li> 
-    <li>YouTube videos and shorts</li> 
-    <li>LinkedIn videos</li> 
-    <li>Twitter photos &amp; videos</li> 
-    <li>Threads photos &amp; videos</li> 
-    <li>Pinterest photos &amp; videos</li> 
-   </ul> 
-  </div> 
+            h1 {
+                font-size: 2rem;
+            }
 
-  <footer> 
-   <div class="footer-container"> 
-     <span id="currentTime"></span> 
-     <span class="rainbow-text"> | ©2024 HaruLynxx. All rights reserved.</span> 
-   </div> 
-  </footer> 
-
-  <script>
+            .profile-circle {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <audio id="background-audio" loop>
+        <source src="https://raw.githubusercontent.com/ReySy3/anydl/main/spotifydown.com%20-%20Gitara.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div class="profile-circle">
+        <a href="https://www.facebook.com/yuii022605" target="_blank">
+            <img src="https://i.ibb.co/X5862Ym/20th-Century-Boys-Manga.jpg" alt="Profile" class="profile-img">
+        </a>
+    </div>
+    <div class="container">
+        <h1>AnyDL</h1>
+        <p>Universal Downloader</p>
+        <input type="url" id="mediaUrl" placeholder="Enter the URL of the media" required>
+        <button onclick="startAudioAndDownload()">Download</button>
+    </div>
+    <div id="previewContainer" class="container">
+        <h2>Media Preview:</h2>
+        <img id="previewImage" style="display: none;" alt="Image Preview">
+        <video id="previewVideo" controls style="display: none;"></video>
+        <button id="downloadButton" onclick="trigger()">Download Media</button>
+    </div>
+    <div id="supportedSites" class="container">
+        <h2>Supported Platforms:</h2>
+        <ul>
+            <li>Instagram photos, videos, stories and reels</li>
+            <li>TikTok videos and carousels with no watermark</li>
+            <li>Facebook photos, videos, stories and reels</li>
+            <li>YouTube videos and shorts</li>
+            <li>LinkedIn videos</li>
+            <li>Twitter photos & videos</li>
+            <li>Threads photos & videos</li>
+            <li>Pinterest photos & videos</li>
+        </ul>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <span id="currentTime"></span>
+            <span class="rainbow-text"> | ©2024 HaruLynxx. All rights reserved.</span>
+        </div>
+    </footer>
+    <script>
         let downloadUrl = '';
         const audioElement = document.getElementById('background-audio');
         const previewImage = document.getElementById('previewImage');
         const previewVideo = document.getElementById('previewVideo');
         const previewContainer = document.getElementById('previewContainer');
         const downloadButton = document.getElementById('downloadButton');
-        const snowContainer = document.getElementById('snowContainer');
 
-        
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            const size = Math.random() * 5 + 5; // Random size between 5 and 10
-            snowflake.style.width = `${size}px`;
-            snowflake.style.height = `${size}px`;
-            snowflake.style.left = Math.random() * 100 + 'vw'; // Random horizontal position
-            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // Random fall duration between 2s and 5s
-            snowflake.style.animationName = 'fall'; // Assign animation
-            snowContainer.appendChild(snowflake);
-
-            
-            snowflake.addEventListener('animationend', () => {
-                snowflake.remove();
-            });
-        }
-
-        
-        setInterval(createSnowflake, 200); // Adjust frequency as needed
-
-        
-        const styleSheet = document.styleSheets[0];
-        styleSheet.insertRule(`
-            @keyframes fall {
-                0% { transform: translateY(0); }
-                100% { transform: translateY(100vh); }
-            }
-        `, styleSheet.cssRules.length);
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 400,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
 
         function startAudioAndDownload() {
             audioElement.play().catch(error => {
@@ -253,14 +381,12 @@
                 console.log(`Fetching media for URL: ${url}`);
 
                 if (isImageUrl(url)) {
-                    
                     previewImage.src = url;
                     previewImage.style.display = 'block';
                     previewVideo.style.display = 'none';
                     previewContainer.style.display = 'block';
                     downloadUrl = url;
                 } else {
-                    
                     fetch(`https://joshweb.click/api/anydl?url=${encodeURIComponent(url)}`)
                     .then(response => response.json())
                     .then(data => {
@@ -286,7 +412,7 @@
             }
         }
 
-        function triggerDownload() {
+        function trigger() {
             if (downloadUrl) {
                 const a = document.createElement('a');
                 a.href = downloadUrl;
@@ -304,6 +430,6 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-    </script> 
+    </script>
 </body>
 </html>
