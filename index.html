@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnyDL - Universal Downloader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>ANYDL - Universal Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <style>
         :root {
@@ -22,7 +22,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             min-height: 100vh;
@@ -45,7 +45,6 @@
 
         .container {
             background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
             width: 90%;
@@ -267,7 +266,7 @@
                     }
                 },
                 "color": {
-                    "value": "#ffffff"
+                    "value": "#00FF00"
                 },
                 "shape": {
                     "type": "circle",
@@ -302,7 +301,7 @@
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#ffffff",
+                    "color": "#00FF00",
                     "opacity": 0.4,
                     "width": 1
                 },
@@ -364,72 +363,9 @@
         });
 
         function startAudioAndDownload() {
-            audioElement.play().catch(error => {
-                console.error('Playback failed:', error);
-                alert('Playback failed. Please ensure sound is enabled and try again.');
-            });
-            downloadMedia();
+            audioElement.play();
+            alert('Audio started and downloading functionality will be here.');
         }
-
-        function isImageUrl(url) {
-            return (url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null);
-        }
-
-        function downloadMedia() {
-            const url = document.getElementById('mediaUrl').value;
-            if (url) {
-                console.log(`Fetching media for URL: ${url}`);
-
-                if (isImageUrl(url)) {
-                    previewImage.src = url;
-                    previewImage.style.display = 'block';
-                    previewVideo.style.display = 'none';
-                    previewContainer.style.display = 'block';
-                    downloadUrl = url;
-                } else {
-                    fetch(`https://joshweb.click/api/anydl?url=${encodeURIComponent(url)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('API Response:', JSON.stringify(data, null, 2));
-
-                        if (data.status && data.result) {
-                            downloadUrl = data.result;
-                            previewVideo.src = downloadUrl;
-                            previewVideo.style.display = 'block';
-                            previewImage.style.display = 'none';
-                            previewContainer.style.display = 'block';
-                        } else {
-                            alert('Failed to download media. Please check the URL or try again later.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while downloading the media.');
-                    });
-                }
-            } else {
-                alert('Please enter a valid URL.');
-            }
-        }
-
-        function trigger() {
-            if (downloadUrl) {
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = '';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-        }
-
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
     </script>
 </body>
 </html>
